@@ -4,7 +4,7 @@ import SwiftUI
 struct multibankApp: App {
     var body: some Scene {
         WindowGroup {
-            Text("MultiBank")
+            AppNavigationView()
         }
     }
 }
