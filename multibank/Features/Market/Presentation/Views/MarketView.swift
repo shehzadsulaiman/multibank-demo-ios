@@ -14,17 +14,28 @@ struct MarketView: View {
         VStack(spacing: 8) {
             // status header
             HStack {
-                Spacer()
                 HStack(spacing: 6) {
                     Circle()
                         .fill(viewModel.state.isConnected ? .green : .red)
-                        .frame(width: 20, height: 20)
+                        .frame(width: 10, height: 10)
                     Text(viewModel.state.isConnected ? "connected" : "disconnected")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.secondary)
                 }
-                .padding(.horizontal)
+
+                Spacer()
+
+                Button(viewModel.state.isFeedRunning ? "stop" : "start") {
+                    viewModel.toggleFeed()
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(viewModel.state.isFeedRunning ? .red : .green)
+                .clipShape(Capsule())
             }
+            .padding(.horizontal)
 
             // quote list
             List(viewModel.state.sortedQuotes) { quote in
@@ -53,15 +64,8 @@ struct MarketView: View {
             }
             .listStyle(.plain)
         }
-        .navigationTitle("live market")
+        .navigationTitle("shehzad's live market demo")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(viewModel.state.isFeedRunning ? "stop" : "start") {
-                    viewModel.toggleFeed()
-                }
-            }
-        }
         .onAppear {
             viewModel.start()
         }

@@ -11,9 +11,12 @@ import Combine
 @MainActor
 final class MarketViewModel: ObservableObject {
     @Published private(set) var state = MarketViewState()
+    private let repository: MarketRepository
     private var timerCancellable: AnyCancellable?
+    private var streamCancellable: AnyCancellable?
 
-    init() {
+    init(repository: MarketRepository = MarketRepositoryImpl()) {
+        self.repository = repository
         loadInitialQuotes()
     }
 
@@ -21,14 +24,19 @@ final class MarketViewModel: ObservableObject {
         guard !state.isFeedRunning else { return }
         state.isFeedRunning = true
         state.isConnected = true
+        repository.connect()
+        bindTickStream()
         startSimulationTimer()
     }
 
     func stop() {
         state.isFeedRunning = false
         state.isConnected = false
+        repository.disconnect()
         timerCancellable?.cancel()
+        streamCancellable?.cancel()
         timerCancellable = nil
+        streamCancellable = nil
     }
 
     func toggleFeed() {
@@ -71,27 +79,50 @@ final class MarketViewModel: ObservableObject {
         timerCancellable = Timer.publish(every: 2, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                self?.simulateTickBatch()
+                self?.simulateAndSendBatch()
             }
     }
 
-    private func simulateTickBatch() {
+    private func bindTickStream() {
+        streamCancellable?.cancel()
+        streamCancellable = repository.tickStream
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] tick in
+                self?.applyEchoTick(tick)
+            }
+    }
+
+    private func simulateAndSendBatch() {
         let now = Date()
 
-        state.quotes = state.quotes.map { quote in
+        for quote in state.quotes {
             let movePercent = Double.random(in: -1.25...1.25)
             let delta = quote.price * (movePercent / 100)
             let newPrice = max(0.01, quote.price + delta)
 
-            return StockQuote(
-                id: quote.id,
+            let tick = MarketTick(
                 symbol: quote.symbol,
-                companyName: quote.companyName,
                 price: newPrice,
-                change: delta,
-                changePercent: movePercent,
-                updatedAt: now
+                timestamp: now
             )
+            repository.send(tick: tick)
         }
+    }
+
+    private func applyEchoTick(_ tick: MarketTick) {
+        guard let index = state.quotes.firstIndex(where: { $0.symbol == tick.symbol }) else { return }
+        let old = state.quotes[index]
+        let delta = tick.price - old.price
+        let changePercent = old.price == 0 ? 0 : (delta / old.price) * 100
+
+        state.quotes[index] = StockQuote(
+            id: old.id,
+            symbol: old.symbol,
+            companyName: old.companyName,
+            price: tick.price,
+            change: delta,
+            changePercent: changePercent,
+            updatedAt: tick.timestamp
+        )
     }
 }
