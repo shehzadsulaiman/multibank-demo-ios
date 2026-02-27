@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MarketView: View {
     @EnvironmentObject private var viewModel: MarketViewModel
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: 8) {
@@ -20,7 +21,7 @@ struct MarketView: View {
                         .frame(width: 10, height: 10)
                     Text(viewModel.state.isConnected ? "connected" : "disconnected")
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(MarketTheme.secondaryText(for: colorScheme))
                 }
 
                 Spacer()
@@ -44,14 +45,16 @@ struct MarketView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(quote.symbol)
                                 .font(.headline)
+                                .foregroundStyle(MarketTheme.primaryText(for: colorScheme))
                             Text(quote.companyName)
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(MarketTheme.secondaryText(for: colorScheme))
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 4) {
                             Text("$\(quote.formattedPrice)")
                                 .font(.headline)
+                                .foregroundStyle(MarketTheme.primaryText(for: colorScheme))
                             HStack(spacing: 6) {
                                 Circle()
                                     .fill(changeColor(for: quote))
@@ -63,9 +66,12 @@ struct MarketView: View {
                         }
                     }
                 }
+                .listRowBackground(MarketTheme.cardBackground(for: colorScheme))
             }
             .listStyle(.plain)
+            .scrollContentBackground(.hidden)
         }
+        .background(MarketTheme.screenBackground(for: colorScheme))
         .navigationTitle("shehzad's live market demo")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: String.self) { symbol in
@@ -90,5 +96,6 @@ struct MarketView: View {
     NavigationStack {
         MarketView()
             .environmentObject(MarketViewModel())
+            .environmentObject(ThemeSelection())
     }
 }

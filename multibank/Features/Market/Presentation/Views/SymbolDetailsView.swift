@@ -10,6 +10,7 @@ import SwiftUI
 struct SymbolDetailsView: View {
     let symbol: String
     @EnvironmentObject private var viewModel: MarketViewModel
+    @Environment(\.colorScheme) private var colorScheme
 
     private var quote: StockQuote? {
         viewModel.state.quotes.first(where: { $0.symbol == symbol })
@@ -19,11 +20,13 @@ struct SymbolDetailsView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(symbol)
                 .font(.largeTitle.bold())
+                .foregroundStyle(MarketTheme.primaryText(for: colorScheme))
 
             if let quote {
                 HStack(spacing: 8) {
                     Text("$\(quote.formattedPrice)")
                         .font(.title2.weight(.semibold))
+                        .foregroundStyle(MarketTheme.primaryText(for: colorScheme))
 
                     Text(changeLabel(for: quote))
                         .font(.headline)
@@ -32,16 +35,17 @@ struct SymbolDetailsView: View {
 
                 Text(descriptionText(for: quote.symbol))
                     .font(.body)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(MarketTheme.secondaryText(for: colorScheme))
             } else {
                 Text("loading symbol details...")
                     .font(.body)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(MarketTheme.secondaryText(for: colorScheme))
             }
 
             Spacer()
         }
         .padding()
+        .background(MarketTheme.screenBackground(for: colorScheme))
         .navigationTitle(symbol)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
@@ -67,5 +71,6 @@ struct SymbolDetailsView: View {
     NavigationStack {
         SymbolDetailsView(symbol: "NVDA")
             .environmentObject(MarketViewModel())
+            .environmentObject(ThemeSelection())
     }
 }
