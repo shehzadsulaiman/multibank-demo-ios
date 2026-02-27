@@ -55,6 +55,13 @@ struct MarketView: View {
         }
         .navigationTitle("live market")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(viewModel.state.isFeedRunning ? "stop" : "start") {
+                    viewModel.toggleFeed()
+                }
+            }
+        }
         .onAppear {
             viewModel.start()
         }

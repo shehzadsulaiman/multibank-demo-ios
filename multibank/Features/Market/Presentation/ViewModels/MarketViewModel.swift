@@ -11,24 +11,28 @@ import Combine
 @MainActor
 final class MarketViewModel: ObservableObject {
     @Published private(set) var state = MarketViewState()
+    private var timerCancellable: AnyCancellable?
 
     init() {
         loadInitialQuotes()
     }
 
     func start() {
+        guard !state.isFeedRunning else { return }
         state.isFeedRunning = true
         state.isConnected = true
+        startSimulationTimer()
     }
 
     func stop() {
         state.isFeedRunning = false
         state.isConnected = false
+        timerCancellable?.cancel()
+        timerCancellable = nil
     }
 
     func toggleFeed() {
-        state.isFeedRunning.toggle()
-        state.isConnected = state.isFeedRunning
+        state.isFeedRunning ? stop() : start()
     }
 
     private func loadInitialQuotes() {
@@ -61,5 +65,33 @@ final class MarketViewModel: ObservableObject {
             .init(id: "PEP", symbol: "PEP", companyName: "PepsiCo", price: 170.12, change: 0.5, changePercent: 0.29, updatedAt: Date())
         ]
     }
-}
 
+    private func startSimulationTimer() {
+        timerCancellable?.cancel()
+        timerCancellable = Timer.publish(every: 2, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.simulateTickBatch()
+            }
+    }
+
+    private func simulateTickBatch() {
+        let now = Date()
+
+        state.quotes = state.quotes.map { quote in
+            let movePercent = Double.random(in: -1.25...1.25)
+            let delta = quote.price * (movePercent / 100)
+            let newPrice = max(0.01, quote.price + delta)
+
+            return StockQuote(
+                id: quote.id,
+                symbol: quote.symbol,
+                companyName: quote.companyName,
+                price: newPrice,
+                change: delta,
+                changePercent: movePercent,
+                updatedAt: now
+            )
+        }
+    }
+}
