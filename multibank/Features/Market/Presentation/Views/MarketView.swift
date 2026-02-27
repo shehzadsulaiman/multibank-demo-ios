@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MarketView: View {
-    @StateObject private var viewModel = MarketViewModel()
+    @EnvironmentObject private var viewModel: MarketViewModel
 
     var body: some View {
         VStack(spacing: 8) {
@@ -39,7 +39,7 @@ struct MarketView: View {
 
             // quote list
             List(viewModel.state.sortedQuotes) { quote in
-                NavigationLink(value: quote) {
+                NavigationLink(value: quote.symbol) {
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(quote.symbol)
@@ -68,17 +68,11 @@ struct MarketView: View {
         }
         .navigationTitle("shehzad's live market demo")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: StockQuote.self) { quote in
-            SymbolDetailsView(quote: quote)
+        .navigationDestination(for: String.self) { symbol in
+            SymbolDetailsView(symbol: symbol)
         }
         .safeAreaInset(edge: .bottom) {
             DeveloperFooterView()
-        }
-        .onAppear {
-            viewModel.start()
-        }
-        .onDisappear {
-            viewModel.stop()
         }
     }
 
@@ -95,5 +89,6 @@ struct MarketView: View {
 #Preview {
     NavigationStack {
         MarketView()
+            .environmentObject(MarketViewModel())
     }
 }

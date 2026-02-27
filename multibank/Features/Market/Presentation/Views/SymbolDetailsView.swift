@@ -8,30 +8,41 @@
 import SwiftUI
 
 struct SymbolDetailsView: View {
-    let quote: StockQuote
+    let symbol: String
+    @EnvironmentObject private var viewModel: MarketViewModel
+
+    private var quote: StockQuote? {
+        viewModel.state.quotes.first(where: { $0.symbol == symbol })
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(quote.symbol)
+            Text(symbol)
                 .font(.largeTitle.bold())
 
-            HStack(spacing: 8) {
-                Text("$\(quote.formattedPrice)")
-                    .font(.title2.weight(.semibold))
+            if let quote {
+                HStack(spacing: 8) {
+                    Text("$\(quote.formattedPrice)")
+                        .font(.title2.weight(.semibold))
 
-                Text(changeLabel(for: quote))
-                    .font(.headline)
-                    .foregroundStyle(changeColor(for: quote))
+                    Text(changeLabel(for: quote))
+                        .font(.headline)
+                        .foregroundStyle(changeColor(for: quote))
+                }
+
+                Text(descriptionText(for: quote.symbol))
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("loading symbol details...")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
             }
-
-            Text(descriptionText(for: quote.symbol))
-                .font(.body)
-                .foregroundStyle(.secondary)
 
             Spacer()
         }
         .padding()
-        .navigationTitle(quote.symbol)
+        .navigationTitle(symbol)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             DeveloperFooterView()
@@ -54,16 +65,7 @@ struct SymbolDetailsView: View {
 
 #Preview {
     NavigationStack {
-        SymbolDetailsView(
-            quote: StockQuote(
-                id: "NVDA",
-                symbol: "NVDA",
-                companyName: "NVIDIA",
-                price: 900.00,
-                change: 10.0,
-                changePercent: 1.12,
-                updatedAt: .now
-            )
-        )
+        SymbolDetailsView(symbol: "NVDA")
+            .environmentObject(MarketViewModel())
     }
 }

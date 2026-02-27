@@ -8,9 +8,18 @@
 import SwiftUI
 
 struct AppNavigationView: View {
+    @StateObject private var viewModel = MarketViewModel()
+
     var body: some View {
         NavigationStack {
             MarketView()
+        }
+        .environmentObject(viewModel)
+        .onAppear {
+            viewModel.start()
+        }
+        .onDisappear {
+            viewModel.stop()
         }
     }
 }
