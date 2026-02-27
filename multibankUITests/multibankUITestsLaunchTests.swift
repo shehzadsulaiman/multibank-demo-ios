@@ -2,7 +2,7 @@
 //  multibankUITestsLaunchTests.swift
 //  multibankUITests
 //
-//  Created by sam on 26/02/2026.
+//  Created by shehzad on 26/02/2026.
 //
 
 import XCTest

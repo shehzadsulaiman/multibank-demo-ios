@@ -1,3 +1,10 @@
+//
+//  StockQuote.swift
+//  multibank
+//
+//  Created by shehzad on 26/02/2026.
+//
+
 import Foundation
 
 struct StockQuote: Identifiable, Equatable {
@@ -9,7 +16,7 @@ struct StockQuote: Identifiable, Equatable {
     let changePercent: Double
     let updatedAt: Date
 
-    // quick helper for simple ui formatting
+    // string helper formatting to 0.00
     var formattedPrice: String {
         String(format: "%.2f", price)
     }
