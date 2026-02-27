@@ -15,7 +15,7 @@ struct MarketView: View {
             // status header
             HStack {
                 Spacer()
-                HStack(spacing: 16) {
+                HStack(spacing: 6) {
                     Circle()
                         .fill(viewModel.state.isConnected ? .green : .red)
                         .frame(width: 20, height: 20)
