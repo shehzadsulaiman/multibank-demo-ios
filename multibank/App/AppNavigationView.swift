@@ -26,4 +26,5 @@ struct AppNavigationView: View {
 
 #Preview {
     AppNavigationView()
+        .environmentObject(ThemeSelection())
 }

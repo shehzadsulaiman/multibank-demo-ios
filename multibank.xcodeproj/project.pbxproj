@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4EBFA52C2F5224FE00FF8BB5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4EBFA52B2F5224FE00FF8BB5 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4EBFA40A2F50AF7800FF8BB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		4EBFA3FA2F50AF7500FF8BB5 /* multibank.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = multibank.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EBFA4092F50AF7800FF8BB5 /* multibankTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = multibankTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EBFA4132F50AF7800FF8BB5 /* multibankUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = multibankUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EBFA52B2F5224FE00FF8BB5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		4EBFA3F12F50AF7500FF8BB5 = {
 			isa = PBXGroup;
 			children = (
+				4EBFA52B2F5224FE00FF8BB5 /* README.md */,
 				4EBFA3FC2F50AF7500FF8BB5 /* multibank */,
 				4EBFA40C2F50AF7800FF8BB5 /* multibankTests */,
 				4EBFA4162F50AF7800FF8BB5 /* multibankUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EBFA52C2F5224FE00FF8BB5 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
