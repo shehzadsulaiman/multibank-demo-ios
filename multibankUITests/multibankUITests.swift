@@ -23,12 +23,36 @@ final class multibankUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testFeedScreenLoadsAndShowsCoreControls() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let list = app.descendants(matching: .any).matching(identifier: "marketFeedList").firstMatch
+        XCTAssertTrue(list.waitForExistence(timeout: 5))
+
+        let statusLabel = app.staticTexts["connectionStatusLabel"]
+        XCTAssertTrue(statusLabel.waitForExistence(timeout: 5))
+
+        let toggleButton = app.buttons["feedToggleButton"]
+        XCTAssertTrue(toggleButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(toggleButton.label == "stop" || toggleButton.label == "start")
+    }
+
+    @MainActor
+    func testFeedToggleButtonSwitchesStartStopState() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        let toggleButton = app.buttons["feedToggleButton"]
+        XCTAssertTrue(toggleButton.waitForExistence(timeout: 5))
+
+        let initialLabel = toggleButton.label
+        toggleButton.tap()
+
+        let expectedLabel = (initialLabel == "stop") ? "start" : "stop"
+        let predicate = NSPredicate(format: "label == %@", expectedLabel)
+        expectation(for: predicate, evaluatedWith: toggleButton)
+        waitForExpectations(timeout: 5)
     }
 
     @MainActor

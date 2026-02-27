@@ -22,6 +22,7 @@ struct MarketView: View {
                     Text(viewModel.state.isConnected ? "connected" : "disconnected")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(MarketTheme.secondaryText(for: colorScheme))
+                        .accessibilityIdentifier("connectionStatusLabel")
                 }
 
                 Spacer()
@@ -35,6 +36,7 @@ struct MarketView: View {
                 .padding(.vertical, 8)
                 .background(viewModel.state.isFeedRunning ? .red : .green)
                 .clipShape(Capsule())
+                .accessibilityIdentifier("feedToggleButton")
             }
             .padding(.horizontal)
 
@@ -70,6 +72,7 @@ struct MarketView: View {
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
+            .accessibilityIdentifier("marketFeedList")
         }
         .background(MarketTheme.screenBackground(for: colorScheme))
         .navigationTitle("shehzad's live market demo")
