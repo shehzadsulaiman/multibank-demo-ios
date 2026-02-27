@@ -39,25 +39,27 @@ struct MarketView: View {
 
             // quote list
             List(viewModel.state.sortedQuotes) { quote in
-                HStack(spacing: 16) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(quote.symbol)
-                            .font(.headline)
-                        Text(quote.companyName)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 4) {
-                        Text("$\(quote.formattedPrice)")
-                            .font(.headline)
-                        HStack(spacing: 6) {
-                            Circle()
-                                .fill(changeColor(for: quote))
-                                .frame(width: 6, height: 6)
-                            Text(changeLabel(for: quote))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(changeColor(for: quote))
+                NavigationLink(value: quote) {
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(quote.symbol)
+                                .font(.headline)
+                            Text(quote.companyName)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("$\(quote.formattedPrice)")
+                                .font(.headline)
+                            HStack(spacing: 6) {
+                                Circle()
+                                    .fill(changeColor(for: quote))
+                                    .frame(width: 6, height: 6)
+                                Text(changeLabel(for: quote))
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(changeColor(for: quote))
+                            }
                         }
                     }
                 }
@@ -66,6 +68,12 @@ struct MarketView: View {
         }
         .navigationTitle("shehzad's live market demo")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: StockQuote.self) { quote in
+            SymbolDetailsView(quote: quote)
+        }
+        .safeAreaInset(edge: .bottom) {
+            DeveloperFooterView()
+        }
         .onAppear {
             viewModel.start()
         }

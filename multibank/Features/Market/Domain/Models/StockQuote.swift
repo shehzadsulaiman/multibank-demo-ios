@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StockQuote: Identifiable, Equatable {
+struct StockQuote: Identifiable, Equatable, Hashable {
     let id: String
     let symbol: String
     let companyName: String
